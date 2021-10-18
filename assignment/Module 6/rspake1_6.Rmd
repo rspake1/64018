@@ -1,0 +1,67 @@
+---
+title: "Module 6 assignment"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## assignment prompt
+
+Prompt:
+
+Heart Start produces automated external defibrillators (AEDs) in each of two different plants (A and B). The unit production costs and monthly production capacity of the two plants are indicated in the table below. The AEDs are sold through three wholesalers. The shipping cost from each plant to the warehouse of each wholesaler along with the monthly demand from each wholesaler are also indicated in the table. How many AEDs should be produced in each plant, and how should they be distributed to each of the three wholesaler warehouses so as to minimize the combined cost of production and shipping?
+
+```{r Transportation model}
+library(lpSolveAPI)
+lprec <- make.lp(0,8)
+set.objfn(lprec, c(622,614,630,641,645,649,0,0))
+lp.control(lprec,sense='min')
+add.constraint(lprec, c(1,1,1,0,0,0,1,0), "=", 100)
+add.constraint(lprec, c(0,0,0,1,1,1,0,1), "=", 120)
+add.constraint(lprec, c(1,0,0,1,0,0,0,0), "=", 80)
+add.constraint(lprec, c(0,1,0,0,1,0,0,0), "=", 60)
+add.constraint(lprec, c(0,0,1,0,0,1,0,0), "=", 70)
+add.constraint(lprec, c(0,0,0,0,0,0,1,1), "=", 10)
+
+
+RowNames <- c("Planta_Capacity", "Plantb_Capacity", "W1_demand", "W2_demand", "W3_demand", "Dummy_shipping")
+ColNames <- c("Pa to W1", "Pa to W2", "Pa to W3","Pb to W1", "Pb to W2", "Pb to W3","Dummya", "Dummyb")
+dimnames(lprec) <- list(RowNames, ColNames)
+lprec
+write.lp(lprec,filename = "Assignment6.lp", type = "lp")
+solve(lprec)
+
+
+get.objective(lprec)
+get.variables(lprec)
+get.constraints(lprec)
+
+get.sensitivity.objex(lprec)
+get.sensitivity.rhs(lprec)
+```
+
+## Conclusions
+
+Based off of the transportation model above, the following amounts from each plant should be shipped to each warehouse:
+
+Plant A:
+    - none to Warehouse 1
+    - 60 to Warehouse 2
+    - 40 to Warehouse 3
+    - none to inventory in Dummy warehouse
+    
+Plant B:
+    - 80 to Warehouse 1
+    - none to Warehouse 2
+    - 30 to Warehouse 3
+    - 10 to inventory allocated in Dummy warehouse 
+
+As you can see, the model picked which plant production would be cheaper to allocate to which warehouse and split the difference in warehouse 3, likely to accommodate for differences in production cost since warehouse 3 was the most expensive for each plant. 
+
+
+
+

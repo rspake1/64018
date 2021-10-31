@@ -1,0 +1,93 @@
+---
+title: "rspake1_8 (DEA)"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Creating the matrix
+
+After calling the benchmarking library, we add the x and y variables. Since we have two inputs and two outputs, the "ncol=2" is necessary as it will split the information input via "matrix". 
+
+```{r make the matrix}
+library(Benchmarking)
+x <- matrix(c(150,400,320,520,350,320,0.2,0.7,1.2,2.0,1.2,0.7),ncol=2)
+y <- matrix(c(14000,14000,42000,28000,19000,14000,3500,21000,10500,42000,25000,15000),ncol=2)
+
+```
+
+## Making the DEA assumptions, Peers, and Lambda
+
+Here we have used the matrix from above to create the DEA assumptions, check their efficiency, and determine their Peers and Lambdas. Each assumption is seperated to make viewing them easier.
+
+```{r DEA}
+e_vrs <- dea(x,y, RTS = "vrs",ORIENTATION = "in")
+eff(e_vrs)
+peers(e_vrs)
+lambda(e_vrs)
+
+
+```
+The vrs shows that Facility 6 is not efficient, Peers shows that it should use Facility 1,2, and 5 as peer units, and the relative weights (0.4,0.34,0.26) are provided through lambda.
+
+```{r}
+e_crs <- dea(x,y, RTS = "crs",ORIENTATION = "in")
+eff(e_crs)
+peers(e_crs)
+lambda(e_crs)
+
+```
+The crs indicates that both facility 5 and 6 are not efficient. Peers shows that both should use facility 1,2, and 4 as peer units, and the relative weights (0.2,0.08,0.54) and (0.34,0.39,0.13) are provided through lambda.
+
+
+```{r}
+e_irs <- dea(x,y, RTS = "irs",ORIENTATION = "in")
+eff(e_irs)
+peers(e_irs)
+lambda(e_irs)
+
+
+```
+The irs indicates that facility 6 is not efficient. Peers shows that it should use facility 1,2, and 5 as peer units, and the relative weights (0.4,0.34,0.26) are provided through lambda.
+
+
+```{r}
+e_drs <- dea(x,y, RTS = "drs",ORIENTATION = "in")
+eff(e_drs)
+peers(e_drs)
+lambda(e_drs)
+
+
+```
+The drs indicates that both facility 5 and 6 are not efficient. Peers shows that both should use facility 1,2, and 4 as peer units, and the relative weights (0.2,0.08,0.54) and (0.34,0.39,and 0.13) are provided through lambda.
+
+
+```{r}
+e_fdh <- dea(x,y, RTS = "fdh",ORIENTATION = "in")
+eff(e_fdh)
+peers(e_fdh)
+lambda(e_fdh)
+
+
+```
+The fdh returns all facilities as being effective.
+
+
+```{r}
+e_add <- dea(x,y, RTS = "add",ORIENTATION = "in")
+eff(e_add)
+peers(e_add)
+lambda(e_add)
+```
+The frh (known as "add" in R) returns that all facilities are efficient. 
+
+
+
+
+So what insights can we pull from this information? First, all DEA assumptions that are linear problems returned that Facility 6 is inefficient. Similarly, the peer units for this facility with the most weight are facilities 1 and 2. CRS and DRS both noted that facility 5 was also inefficient. In assumptions where facility 5 was not identified, facility 6 was also suggested to use facility 5 as a peer unit. In CRS and DRS, facility 5 and facility 6 both had facilities 1,2, and 4 as peer units. Regardless of which is used, in all of the linear programming assumptions, facility 6 was ineffective and had both facility 1 and 2 were identified as peer units. fdh and frh are a little more tricky to understand. Unlike the other assumptions, these are mixed integer programming problems. From what I can tell, this seems to have led them both to identify all facilities as efficient. 
+
+
+
+

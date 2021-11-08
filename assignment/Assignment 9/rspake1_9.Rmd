@@ -1,0 +1,31 @@
+---
+title: "rspake1_9"
+output: html_document
+---
+
+```{r setup,}
+library(lpSolveAPI)
+gp_test <- read.lp("C:/Users/rspake1/Desktop/CSV files/Assignments/Quantitative management modeling/dewright_streamline.lp")
+
+solve(gp_test)
+get.objective(gp_test)
+get.variables(gp_test)
+
+
+```
+
+## model used
+
+// Objective function
+max: 20x1 + 15x2 + 25x3 - 6y1p - 6y1m - 3y2m;
+
+// Constraints
+6x1 + 4x2 + 5x3 + y1m - y1p = 50;
+8x1 + 7x2 + 5x3 + y2m - y2p = 75;
+
+
+## Answers
+
+In this model, x3 and y1p are the two variables that are effected in the model. What does this mean? At the objective of 225, x3 becomes 25x(15) and y1p becomes 6x(25). Profits increase by 25 x 15 = 375 however, a penalty of 6 x 25 = 150 is incurred as employment level raises above 50. 
+
+

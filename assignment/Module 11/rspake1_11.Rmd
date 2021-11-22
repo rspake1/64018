@@ -1,0 +1,58 @@
+---
+title: "rspake1_11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Assignment Instructions
+
+AP is a shipping service that guarantees overnight delivery of packages in the continental US. 
+The company has various hubs at major cities and airports across the country. Packages are 
+received at hubs, and then shipped to intermediate hubs or to their final destination. 
+ 
+The manager of the AP hub in Cleveland is concerned about labor costs, and is interested in 
+determining the most effective way to schedule workers. The hub operates seven days a week, 
+and the number of packages it handles varies from one day to another. 
+
+Package handlers at AP are guaranteed a five-day work week with two consecutive days off. The 
+base wage for the handlers is $750 per week. Workers working on Saturday or Sunday receive an 
+additional $25 per day. 
+
+The manager wants to keep the total wage expenses as low as possible while ensuring that there 
+are sufficient number of workers available each day. Formulate and solve the problem. What was 
+the total cost? How many workers are available each day? 
+ 
+Hint: The number of available workers each day can exceed, but can not be below the required 
+amount.
+
+```{r Ap staffing}
+library(lpSolveAPI)
+Ip_staff <- read.lp("C:/Users/rspake1/Desktop/CSV files/Assignments/Quantitative management modeling/AP_staffing.lp")
+
+Ip_staff
+
+solve(Ip_staff)
+get.objective(Ip_staff)
+get.variables(Ip_staff)
+get.constraints(Ip_staff)
+
+```
+
+## Conclusion
+
+Total Cost = $15,182
+
+Daily Staffing:
+
+Sunday = 18
+Monday = 27
+Tuesday = 28
+Wednesday = 36
+Thursday = 26
+Friday = 26
+Saturday = 19
+
+
